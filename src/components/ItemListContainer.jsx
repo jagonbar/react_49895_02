@@ -1,45 +1,65 @@
 //(1)-- https://www.robinwieruch.de/react-hooks-fetch-data/
-import { useState, useEffect } from "react";
-import Item from "./Item.jsx";
-import { Routes, Route, useParams } from "react-router-dom";
+//(2)-- https://www.reactjs.wiki/como-puedes-cancelar-una-peticion-a-una-api-en-use-effect-correctamente
 
-export default function ItemListContainer({ greeting }) {
+import { useState, useEffect } from "react";
+import Item                    from "./Item.jsx";
+import { useParams }           from "react-router-dom";
+import { formateaPesos }       from "../utils/format.js";
+
+export default function ItemListContainer({changeCategory, greeting }) {
+    // console.log("debug-ItemListContainer");
+
     const [items, setItems] = useState([]);
 
     let { categoryId } = useParams();
 
-    console.log({ categoryId });
+console.log({changeCategory})
+    // console.log({ categoryId });
 
-    useEffect(()=>{
+    // useEffect
+    useEffect(() => {
+        // console.log("debug-ItemListContainer--useEffect");
+
         /*(1)*/
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        /*(2)*/
         let fetchProducts = async () => {
-                                let data = await fetch("/data/products.json");
-                                let products = await data.json();
-                                
-                                let productsCategory = (categoryId!==undefined) ? 
-                                    products.filter((p) => p.categoryId == categoryId)
-                                    : products;
+            let data = await fetch("/data/products.json", { signal });
+            // let data     = await fetch("/data/products.json");
+            let products = await data.json();
 
-                                    setItems(productsCategory);
-                            }
+            let productsCategory = (categoryId !== undefined)? products.filter((p) => p.categoryId == categoryId): products;
+            
+            categoryId = (categoryId === undefined)?"/":categoryId;
+
+            changeCategory(categoryId)
+
+            setItems(productsCategory);
+        };
         fetchProducts();
-    }, []);
 
-    let itemParsed = []
+        // Si se desmonta el componente, abortamos la petición
+        return () => controller.abort();
+    }, [categoryId]);
+
+    let itemParsed = [];
     for (let item of items) {
+        // console.log("debug-ItemListContainer--for-items");
         let dataset = {};
         for (let atributo in item) {
             // console.log({atributo})
             dataset["data-" + atributo] = item[atributo];
         }
 
-        console.log({dataset})
+        // console.log({dataset})
         itemParsed.push(
             <Item
                 key={item.productId}
                 nombre_juego={item.productName}
                 imagen={item.imgSrc}
-                precio={item.price}
+                precio={formateaPesos(parseInt(item.price))}
                 descripcion={item.description}
                 id={item.productId}
                 data={dataset}
@@ -47,64 +67,18 @@ export default function ItemListContainer({ greeting }) {
         );
     }
 
-    console.log({items})
-    console.log({itemParsed})
+    // console.log({items})
+    // console.log({itemParsed})
     return (
-        <main>
+        <>
             <div className="games__title">
                 <h1>{greeting}</h1>
             </div>
-            <div className="games__content">
-                <div className="games__options">
-                    <p className="games__options__option">
-                        <input
-                            type="checkbox"
-                            name="NSWITCH"
-                            id="NSWITCH"
-                            data-tipo="switch"
-                            className="checkFiltro"
-                            defaultChecked
-                        />
-                        <label htmlFor="NSWITCH"> NINTENDO SWITCH</label>
-                    </p>
-                    <p className="games__options__option">
-                        <input
-                            type="checkbox"
-                            name="PS"
-                            id="PS"
-                            data-tipo="playstation"
-                            className="checkFiltro"
-                            defaultChecked
-                        />
-                        <label htmlFor="PS"> PlayStation </label>
-                    </p>
-                    <p className="games__options__option">
-                        <input
-                            type="checkbox"
-                            name="XBOX"
-                            id="XBOX"
-                            data-tipo="xbox"
-                            className="checkFiltro"
-                            defaultChecked
-                        />
-                        <label htmlFor="XBOX"> XBOX </label>
-                    </p>
-                    <p className="games__options__option">
-                        <input
-                            type="checkbox"
-                            name="PC"
-                            id="PC"
-                            data-tipo="pc"
-                            className="checkFiltro"
-                            defaultChecked
-                        />
-                        <label htmlFor="PC"> PC </label>
-                    </p>
-                </div>
+            <div className="games__content">                
                 <div className="games__list">{itemParsed}</div>
                 {/* ./games__list */}
             </div>
             {/* ./games__content */}
-        </main>
+        </>
     );
 }

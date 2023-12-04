@@ -16,15 +16,15 @@ export default function NavBar() {
                         <i className="fa fa-home" aria-hidden="true"></i>
                         Home
                     </Link>
-                    <Link to="/category/1">
+                    <Link to="/category/games">
                         <i className="fa fa-gamepad" aria-hidden="true"></i>
                         Juegos
                     </Link>
-                    <Link to="/category/2">
+                    <Link to="/category/console">
                         <i className="fa fa-laptop" aria-hidden="true"></i>
                         Consolas
                     </Link>
-                    <Link to="/category/3">
+                    <Link to="/category/component">
                         <i className="fa fa-users" aria-hidden="true"></i>
                         Periféricos
                     </Link>
@@ -42,7 +42,7 @@ export default function NavBar() {
                 </div>
             </div>
 
-            <Link to="/">
+            <Link className="nav-link" to="/" style={{"textDecoration":"none"}}>
                 <div className="title header-child">
                     <div className="title-text">POWER GAMES</div>
                     <div className="title-image">{newLocal}</div>
@@ -53,15 +53,15 @@ export default function NavBar() {
                     <i className="fa fa-home" aria-hidden="true"></i>
                     Home
                 </Link>
-                <Link className="nav-link" aria-current="page" to="/category/1">
+                <Link className="nav-link" aria-current="page" to="/category/games">
                     <i className="fa fa-gamepad" aria-hidden="true"></i>
                     Juegos
                 </Link>
-                <Link className="nav-link" aria-current="page" to="/category/2">
+                <Link className="nav-link" aria-current="page" to="/category/console">
                     <i className="fa fa-laptop" aria-hidden="true"></i>
                     Consolas
                 </Link>
-                <Link className="nav-link" to="/category/3">
+                <Link className="nav-link" to="/category/component">
                     <i className="fa fa-laptop" aria-hidden="true"></i>
                     Periféricos
                 </Link>
