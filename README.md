@@ -1,5 +1,5 @@
 # autor: JAVIER GONZALEZ BARRIENTOS
-# para curso 49895 react 
+# para curso 49895 react 2da entrega
 
 
 # React + Vite
